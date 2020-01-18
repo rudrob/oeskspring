@@ -27,8 +27,8 @@ class FileUploadView(APIView):
 
 
 class AllMeasurementsView(APIView):
-    # authentication_classes = [TokenAuthentication]
-    # permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
 
     # def get_queryset(self):
     #     queryset = Measurement.objects.all()
