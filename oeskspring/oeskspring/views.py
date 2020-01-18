@@ -30,15 +30,17 @@ class AllMeasurementsView(APIView):
     # authentication_classes = [TokenAuthentication]
     # permission_classes = [IsAuthenticated]
 
-    def get_queryset(self):
-        queryset = Measurement.objects.all()
-        namespace = self.request.query_params.get('namespace')
-        if namespace:
-            queryset = queryset.filter(namespace=namespace)
-        return queryset
+    # def get_queryset(self):
+    #     queryset = Measurement.objects.all()
+    #     namespace = self.request.query_params.get('namespace')
+    #     if namespace:
+    #         queryset = queryset.filter(namespace=namespace)
+    #     return queryset
 
-    # def get(self, _):
-    #     return Response(MeasurementSerializer(Measurement.objects.all(), many=True).data)
+    def get(self, request):
+        namespace = request.query_params.get('namespace')
+        return Response(MeasurementSerializer(
+            Measurement.objects.filter(namespace=namespace), many=True).data)
 
     def post(self, request):
         data = request.data

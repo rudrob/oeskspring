@@ -1,6 +1,7 @@
 import statistics
 import subprocess
 import time
+from datetime import datetime
 
 import numpy
 
@@ -18,6 +19,15 @@ def create_measurement(jar_name, times, namespace):
             sanity_counter += 1
             line = proc.stdout.readline()
             print("test:", line.rstrip())
+            if sanity_counter > 5000:
+                result_measurement = Measurement()
+                result_measurement.jarname = jar_name
+                result_measurement.namespace = namespace
+                result_measurement.failed = True
+                result_measurement.done = True
+                result_measurement.save()
+                result_measurement.enddate = datetime.now()
+                return
             if is_desired_log_line(line):
                 append_time_from_desired_line(line, time_numbers)
                 break
@@ -37,16 +47,19 @@ def create_measurement(jar_name, times, namespace):
     result_measurement.stdev = stdev
     result_measurement.iqr = iqr
     result_measurement.done = True
+    result_measurement.jarname = jar_name
+    result_measurement.namespace = namespace
+    result_measurement.enddate = datetime.now()
     result_measurement.save()
 
 
 def is_desired_log_line(line):
-    return b'Started SpringboottestApplication' in line
+    return b'JVM running for' in line
 
 
 def append_time_from_desired_line(line, time_numbers):
-    ind = line.index('seconds')
-    if line[ind - 6] == 'n':
+    ind = line.index(b'seconds')
+    if line[ind - 6] == b'n':
         time = line[ind - 4: ind - 1]
     else:
         time = line[ind - 6: ind - 1]
