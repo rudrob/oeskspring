@@ -2,5 +2,9 @@ from django.db import models
 
 
 class Measurement(models.Model):
-    time = models.FloatField()
+    done = models.BooleanField()
+    avg = models.FloatField()
+    median = models.FloatField()
+    iqr = models.FloatField()
+    stdev = models.FloatField()
 
