@@ -7,7 +7,7 @@ import numpy
 from .models import Measurement
 
 
-def create_measurement(jar_name, times):
+def create_measurement(jar_name, times, namespace):
     time_numbers = []
 
     for i in range(times):

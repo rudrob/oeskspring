@@ -30,10 +30,28 @@ class AllMeasurementsView(APIView):
     # authentication_classes = [TokenAuthentication]
     # permission_classes = [IsAuthenticated]
 
-    def get(self, _):
-        return Response(MeasurementSerializer(Measurement.objects.all(), many=True).data)
+    def get_queryset(self):
+        queryset = Measurement.objects.all()
+        namespace = self.request.query_params.get('namespace')
+        if namespace:
+            queryset = queryset.filter(namespace=namespace)
+        return queryset
 
-    def post(self, _):
-        thread = Thread(target=create_measurement, args=('measurement-0.0.1-SNAPSHOT.jar', 4))
+    # def get(self, _):
+    #     return Response(MeasurementSerializer(Measurement.objects.all(), many=True).data)
+
+    def post(self, request):
+        data = request.data
+        jarname = data['jarname']
+        times = data['times']
+        namespace = data['namespace']
+        if jarname is None:
+            raise serializers.ValidationError("Missing jarname param")
+        if times is None:
+            raise serializers.ValidationError("Missing times param")
+        if namespace is None:
+            raise serializers.ValidationError("Missing namespace param")
+        thread = Thread(target=create_measurement,
+                        args=(jarname, times, namespace))
         thread.start()
         return Response(data=None)
