@@ -16,5 +16,6 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('admin/', admin.site.urls),
     url(r'^measurements/', views.AllMeasurementsView.as_view()),
+    url(r'^upload', views.FileUploadView.as_view()),
     url(r'^router/', include(router.urls))
     ]

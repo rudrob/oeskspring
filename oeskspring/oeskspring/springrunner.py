@@ -11,9 +11,11 @@ def create_measurement(jar_name, times):
     time_numbers = []
 
     for i in range(times):
-        cmd = 'cd ~ && java -jar ' + jar_name
+        cmd = 'cd ~/oeskspring && java -jar ' + jar_name
         proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+        sanity_counter = 0
         while True:
+            sanity_counter += 1
             line = proc.stdout.readline()
             print("test:", line.rstrip())
             if is_desired_log_line(line):
@@ -34,6 +36,7 @@ def create_measurement(jar_name, times):
     result_measurement.median = median
     result_measurement.stdev = stdev
     result_measurement.iqr = iqr
+    result_measurement.done = True
     result_measurement.save()
 
 
