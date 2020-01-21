@@ -3,19 +3,20 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serializers import *
-from .models import *
 from .springrunner import *
 from threading import Thread
-from rest_framework.parsers import FileUploadParser
+from rest_framework.parsers import MultiPartParser
 import rest_framework.status as status
+from os.path import expanduser
 
 
 class FileUploadView(APIView):
-    parser_classes = (FileUploadParser,)
+    parser_classes = (MultiPartParser,)
 
     def post(self, request, format='jar'):
         up_file = request.FILES['file']
-        destination = open('~/oeskspring/' + up_file.name, 'wb+')
+        home = expanduser("~")
+        destination = open(str(home) + '/oeskspring/' + up_file.name, 'wb')
         for chunk in up_file.chunks():
             destination.write(chunk)
         destination.close()  # File should be closed only after all chunks are added
